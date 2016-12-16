@@ -6,15 +6,21 @@ Well it reminds you to close the work and go home after completion of working ho
 
 - Use `-h` flag to configure the hours to set
 - Use `-m` flag to configure the mins to set
+- Use `-message` flag to configure the message to show on completion of working hours
 
 Example:
 
 `main -h 1 -m 30` sets the timer for 1 hour and 30 minutes
+`main -h 1 -m 30 -message "Go"` sets the timer for 1 hour and 30 minutes and shows dialog with the given message
 
-# Usage
+# Usage (Newbiees)
 
 ## For Windows
 Put the `main.exe` in "Startup" folder to run the program on booting your machine
+
+# Building (Experts)
+
+TODO
 
 ## Dependency
 
