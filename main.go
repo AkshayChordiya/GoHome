@@ -18,7 +18,7 @@ func main() {
 	fmt.Println()
 
 	// Create new ticker
-	ticker := time.NewTicker(time.Second * 5)
+	ticker := time.NewTicker(time.Minute * 1)
 	go remainingTimeTicker(*ticker, endTime)
 
 	// Let's keep the app running till working hour is complete
