@@ -60,7 +60,7 @@ func getWorkEndTime(hour, min int) (time.Time) {
 // endTime is the exact time
 func remainingTimeTicker(ticker time.Ticker, endTime time.Time) {
 	for t := range ticker.C {
-		fmt.Println("Remaining Time: ", endTime.Sub(t))
+		fmt.Println("Going Home at", endTime.Format(time.Kitchen), "after", endTime.Sub(t))
 	}
 }
 
