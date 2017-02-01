@@ -25,3 +25,6 @@ _testmain.go
 # Project Files
 .idea/*
 *.iml
+
+# Application Temporary Files
+time-store

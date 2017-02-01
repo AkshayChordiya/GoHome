@@ -4,9 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"time"
-	// Importing the Native UI 3rd party library
+	// For Native UI
 	"github.com/andlabs/ui"
+	// For Database
+	"github.com/peterbourgon/diskv"
 )
+
+// The database instance
+var db *diskv.Diskv
+
+const GO_HOME_KEY = "go-time"
 
 // Starting point of the app
 func main() {
@@ -14,8 +21,7 @@ func main() {
 	hour, min, message := readFlags()
 	endTime := getWorkEndTime(hour, min)
 
-	fmt.Printf("Will remind you after %d hour and %d minute", hour, min)
-	fmt.Println()
+	fmt.Println("Going Home at", endTime.Format(time.Kitchen), "after", endTime.Sub(time.Now()))
 
 	// Create new ticker
 	ticker := time.NewTicker(time.Minute * 1)
@@ -47,13 +53,27 @@ func readFlags() (hour int, min int, message string) {
 	return
 }
 
-// Get the exact time when the working hours will end
+// Get the exact time when the working hours will end.
+// Initially it checks for saved instance of end time
+// in the database if found returns it else builds fresh end time.
 // It returns the exact time (Ex. HH:MM => 05:30)
 func getWorkEndTime(hour, min int) (time.Time) {
 	t := time.Now()
 	t = t.Add(time.Hour * time.Duration(hour))
 	t = t.Add(time.Minute * time.Duration(min))
-	return t
+
+
+	db = diskv.New(diskv.Options{
+		BasePath:     "time-store",
+	})
+	value, err := db.Read(GO_HOME_KEY)
+	if err != nil {
+		db.Write(GO_HOME_KEY, []byte(t.Format(time.UnixDate)))
+		return t
+	} else {
+		current_time, _ := time.Parse(time.UnixDate, string(value))
+		return current_time
+	}
 }
 
 // Prints the remaining time periodically using Ticker
@@ -79,6 +99,7 @@ func showTimeCompleteWindow(message string) {
 		window := ui.NewWindow("Go Home!", 200, 100, false)
 		window.SetChild(box)
 		window.OnClosing(func(*ui.Window) bool {
+			db.Erase(GO_HOME_KEY)
 			ui.Quit()
 			return true
 		})
